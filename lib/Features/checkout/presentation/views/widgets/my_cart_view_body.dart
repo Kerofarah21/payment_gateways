@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/stripe_service.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../data/repos/checkout_repo_imp.dart';
+import '../../cubits/payment_cubit/payment_cubit.dart';
 import 'cart_info_item.dart';
-import 'payment_methods_list_view.dart';
+import 'payment_method_bottom_sheet.dart';
 import 'total_price_widget.dart';
 
 class MyCartViewBody extends StatelessWidget {
@@ -56,41 +60,25 @@ class MyCartViewBody extends StatelessWidget {
               // }));
 
               showModalBottomSheet(
-                  context: context,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  builder: (context) {
-                    return const PaymentMethodsBottomSheet();
-                  });
+                context: context,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                builder: (context) {
+                  return BlocProvider(
+                    create: (context) => PaymentCubit(
+                      CheckoutRepoImp(
+                        stripeService: StripeService(),
+                      ),
+                    ),
+                    child: const PaymentMethodsBottomSheet(),
+                  );
+                },
+              );
             },
           ),
           const SizedBox(
             height: 12,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class PaymentMethodsBottomSheet extends StatelessWidget {
-  const PaymentMethodsBottomSheet({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 16,
-          ),
-          PaymentMethodsListView(),
-          SizedBox(
-            height: 32,
-          ),
-          CustomButton(text: 'Continue'),
         ],
       ),
     );

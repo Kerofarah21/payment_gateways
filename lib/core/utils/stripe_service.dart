@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../../Features/checkout/data/models/payment_intent/payment_intent_model.dart';
@@ -12,7 +13,7 @@ class StripeService {
     var response = await DioHelper.postData(
       endpoint: 'https://api.stripe.com/v1/payment_intents',
       data: paymentIntentInput.toJson(),
-      contentType: 'application/x-www-form-urlencoded',
+      contentType: Headers.formUrlEncodedContentType,
       token: ApiKeys.secretKey,
     );
 
